@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<core:View
+	controllerName="sap.ui.demo.view.Root"
+	displayBlock="true"
+	resourceBundleName="sap.ui.demo.i18n.messageBundle"
+	resourceBundleAlias="i18n"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+
+	<Shell showLogout="false">
+		<App id="idApp">
+			<pages>
+				<mvc:JSView viewName="sap.ui.demo.view.Home" id="idViewHome" />
+				<mvc:XMLView viewName="sap.ui.demo.view.Detail" id="idViewDetail" />
+			</pages>
+		</App>
+	</Shell>
+
+</core:View>

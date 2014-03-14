@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta charset="UTF-8">
+
+		<title>ui5_async</title>
+
+		<style>
+			#center {
+				left: 50%;
+				top: 50%;
+				margin-top: -12px;
+				margin-left: -12px;
+				position: absolute;
+			}
+		</style>
+
+		<script src="spin.min.js"></script>
+
+		<!--src="https://openui5.netweaver.ondemand.com/resources/sap-ui-core.js"-->
+		<!--src="mobile_optimised/resources/sap-ui-core.js"-->
+		<!--src="resources/sap-ui-core-lean.js"-->
+		<!--src="resources/sap-ui-core-all.js"-->
+		<!--src="resources/sap-ui-core.js"-->
+		<script id="sap-ui-bootstrap"
+				src="resources/sap-ui-core.js"
+				data-sap-ui-theme="sap_bluecrystal"
+				data-sap-ui-libs="sap.m, sap.ui.layout"
+				data-sap-ui-xx-bindingSyntax="complex"
+				data-sap-ui-preload="async"
+				data-sap-ui-resourceroots='{
+					"sap.ui.demo": "./"
+				}' > /* endOfResourceroots */
+		</script>
+	</head>
+	<body class="sapUiBody" role="application" id="content">
+
+		<!--
+		We try to display a spinner here but it doesn't show. The UI5 Component
+		immediately takes over drawing the page.
+		-->
+
+		<p id="temp">This is some plain html while we wait for UI5 to load...</p>
+		<div id="center"></div>
+
+		<script>
+			(function() {
+				/*global Spinner, Promise*/
+				var opts = {
+					length: 12,	// The length of each line
+					width: 4,	// The line thickness
+					radius: 12,	// The radius of the inner circle
+				};
+				var target = document.getElementById("center");
+				var spinner = new Spinner(opts).spin(target);
+
+				/* Note: Promises only work as part of ES6 from Chrome 32. For older versions
+				   or other browsers use the polyfill: https://github.com/jakearchibald/es6-promise */
+
+				var promise = new Promise(function(resolve /*, reject*/) {
+					sap.ui.getCore().attachInit(function() {
+						resolve("UI5 loaded");
+					});
+				});
+
+				promise.then(function(result) {
+					console.log(result);
+
+					var bus = sap.ui.getCore().getEventBus();
+					bus.subscribe("app", "rendered", function() {
+						spinner.stop();
+					});
+
+					new sap.ui.core.ComponentContainer({
+						name: "sap.ui.demo"
+					}).placeAt("content");
+				});
+			}());
+		</script>
+	</body>
+</html>
